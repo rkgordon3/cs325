@@ -1,6 +1,10 @@
 package assignments.monopoly;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class Monopoly {
 
@@ -18,14 +22,13 @@ public class Monopoly {
 		// Place player at "GO"
 		player.moveTo(board[0]);
 	}
+	
 
 	public HashMap<String, Player> getPlayers() {
-		// TODO Auto-generated method stub
 		return players;
 	}
 
 	public Player getPlayer(String name) {
-		// TODO Auto-generated method stub
 		return players.get(name);
 	}
 	
@@ -45,6 +48,13 @@ public class Monopoly {
 
 	public Square getSquare(int index) {
 		return board[index % N_SQUARES];
+	}
+	
+	public ArrayList<Player> assignTurns() {
+		Collection<Player>  c = players.values();
+		ArrayList<Player> turnList = Collections.list(Collections.enumeration(c));
+		Collections.shuffle(turnList);
+		return turnList;
 	}
 
 }

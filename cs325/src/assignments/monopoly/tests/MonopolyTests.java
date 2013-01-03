@@ -3,6 +3,8 @@ package assignments.monopoly.tests;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,12 +17,18 @@ public class MonopolyTests {
 	
 	private Monopoly game;
 	private Player p;
+	private Player p2;
+	private Player p3;
 
 	@Before
 	public void before() {
 		game = new Monopoly();
 	    p = new Player("dog");
 		game.join(p);
+	    p2 = new Player("race car");
+		p3 = new Player("hat");
+		game.join(p2);
+		game.join(p3);
 	}
 
 	@Test
@@ -57,6 +65,27 @@ public class MonopolyTests {
 		assertThat(p.getSquare().index(), not(currentSquare.index()));
 		assertEquals(p.getSquare().index(), (sum+currentSquare.index()) % Monopoly.N_SQUARES);
 	}
+	
+	@Test
+	public void ThreePlayersShouldBePlaying() {
+		assertTrue(game.getPlayers().size() == 3);
+		assertTrue(game.isPlaying(p.getName()));
+		assertTrue(game.isPlaying(p2.getName()));
+		assertTrue(game.isPlaying(p3.getName()));
+	}
+	
+	@Test
+	public void EachPlayerShouldUniqueTurnValue() {		
+		ArrayList<Player> playList = game.assignTurns();
+		assertTrue(playList.size() == 3);
+		assertTrue(playList.contains(p));
+		assertTrue(playList.contains(p2));
+		assertTrue(playList.contains(p3));	
+		assertThat(playList.indexOf(p), not(playList.indexOf(p2)));
+		assertThat(playList.indexOf(p), not(playList.indexOf(p3)));
+		assertThat(playList.indexOf(p2), not(playList.indexOf(p3)));
+	}
+	
 	
 
 }
