@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Monopoly {
 
-	private static final int N_SQUARES = 40;
+	public static final int N_SQUARES = 40;
 	private HashMap<String, Player> players = new HashMap<String,Player>();
 	private Square[] board = new Square[N_SQUARES];
 
@@ -44,7 +44,7 @@ public class Monopoly {
 	}
 
 	public Square getSquare(int index) {
-		return board[index];
+		return board[index % N_SQUARES];
 	}
 
 }

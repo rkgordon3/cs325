@@ -40,9 +40,23 @@ public class MonopolyTests {
 		Roll roll = p.roll();
 		Square currentSquare = p.getSquare();
 		int sum = roll.sum();
-		Square s = game.getSquare(sum);
+		System.out.println("roll " + sum);
+		Square s = game.getSquare(sum+currentSquare.index());
 		p.moveTo(s);
 		assertThat(p.getSquare().index(), not(currentSquare.index()));
 		assertEquals(p.getSquare().index(), sum+currentSquare.index());
 	}
+	
+	@Test
+	public void PlayerShouldPassGo() {
+		Square currentSquare = game.getSquare(35);
+		p.moveTo(currentSquare);
+		int sum = 8;
+		Square s = game.getSquare(sum+currentSquare.index());
+		p.moveTo(s);
+		assertThat(p.getSquare().index(), not(currentSquare.index()));
+		assertEquals(p.getSquare().index(), (sum+currentSquare.index()) % Monopoly.N_SQUARES);
+	}
+	
+
 }
