@@ -9,7 +9,7 @@ import assignments.monopoly.Die;
 public class DieTests {
 
 	@Test
-	public void ValueShouldBeBetweenOneAndSix() {
+	public void () {
 		Die d = new Die();
 		for (int i = 0; i < 1000; i++) {
 			int value = d.roll();
