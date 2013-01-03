@@ -3,6 +3,11 @@ package assignments.monopoly;
 public class Square {
 
 	private Player player;
+	private int index;
+	
+	public Square(int index) {
+		this.index = index;
+	}
 
 	public void addPlayer(Player player) {
 		this.player = player;
@@ -13,8 +18,7 @@ public class Square {
 	}
 
 	public int index() {
-		// TODO Auto-generated method stub
-		return 0;
+		return index;
 	}
 
 }
