@@ -12,4 +12,9 @@ public class Square {
 		return player;
 	}
 
+	public int index() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
