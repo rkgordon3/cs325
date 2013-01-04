@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import assignments.monopoly.Monopoly;
 import assignments.monopoly.Player;
+import assignments.monopoly.Property;
 import assignments.monopoly.Roll;
 import assignments.monopoly.Square;
 
@@ -86,6 +87,28 @@ public class MonopolyTests {
 		assertThat(playList.indexOf(p2), not(playList.indexOf(p3)));
 	}
 	
+	@Test(expected = IllegalStateException.class)
+	public void PlayerAttemptsToBuyGo() {
+		Square s = game.getSquare("Go");
+		p.moveTo(s);
+		p.buy();		
+	}
 	
+	@Test(expected = IllegalStateException.class)
+	public void PlayerAttemptsToBuyChance() {
+		Square s = game.getSquare("Chance");
+		p.moveTo(s);
+		p.buy();		
+	}
+	
+	@Test
+	public void PlayerAttemptsToBuyAvailableProperty() {
+		Property s = (Property) game.getSquare("Baltic Ave");
+		int initialBal = p.getCashOnHand();
+		p.moveTo(s);
+		p.buy();
+		assertTrue(p.getOwnedProperties().contains(s));
+		assertTrue(initialBal-s.getValue() == p.getCashOnHand());
+	}
 
 }

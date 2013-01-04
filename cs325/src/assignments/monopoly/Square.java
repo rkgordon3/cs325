@@ -2,23 +2,18 @@ package assignments.monopoly;
 
 public class Square {
 
-	private Player player;
-	private int index;
+	private String name;
 	
-	public Square(int index) {
-		this.index = index;
-	}
-
-	public void addPlayer(Player player) {
-		this.player = player;
-	}
-
-	public Object getPlayer() {
-		return player;
+	public Square( String name) {
+		this.name = name;
 	}
 
 	public int index() {
-		return index;
+		return Squares.indexOf(name);
 	}
 
+	public String getName() {
+		return name;
+	}
+	
 }
