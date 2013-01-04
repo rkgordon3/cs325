@@ -4,7 +4,7 @@ public class Property extends Square {
 
 	private int value;
 	private Group group;
-	private Player ownedBy;
+	private FinancialActor ownedBy;
 
 	public Property(String name, int value, Group group) {
 		super(name);
@@ -12,7 +12,7 @@ public class Property extends Square {
 		this.group = group; 
 	}
 
-	public boolean purchase(Player player) {
+	public boolean purchase(FinancialActor player) {
 		return false;
 	}
 
@@ -20,7 +20,7 @@ public class Property extends Square {
 		return value;
 	}
 
-	public void setOwner(Player player) {
+	public void setOwner(FinancialActor player) {
 		this.ownedBy = player;
 	}
 
