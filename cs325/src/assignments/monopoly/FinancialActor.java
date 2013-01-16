@@ -6,7 +6,7 @@ public class FinancialActor {
 
 	private ArrayList<Property> ownedProperties = new ArrayList<Property>();
 	private int cashOnHand = Monopoly.INITIAL_PLAY_CASH;
-	Monopoly game;
+	private Monopoly game;
 
 	public void buy(Property p) {
 		if (game.buy(this, p)) {
