@@ -9,6 +9,6 @@ public interface Safe {
 
 	public boolean isLocked();
 
-	public void enter(char c);
+	public void enter(Button b);
 
 }

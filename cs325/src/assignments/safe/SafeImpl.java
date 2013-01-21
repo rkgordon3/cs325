@@ -22,7 +22,8 @@ public class SafeImpl implements Safe {
 	}
 
 	@Override
-	public void enter(char c) {
+	public void enter(Button b) {
+		char c = b.value();
 		if (Character.isDigit(c)) {
 		  display[displayIndex++] = c;
 		}
