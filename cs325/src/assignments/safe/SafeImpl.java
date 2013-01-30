@@ -1,19 +1,15 @@
 package assignments.safe;
 
-public class SafeImpl implements Safe {
+public class SafeImpl implements Safe  {
 
-	private int displaySize = 6;
-	private char[] display = new char[displaySize];
-	private int displayIndex = 0;
+
+	private char[] display;
+	private int index = 0;
 	private boolean locked = true;
+	private boolean kPressed = false;
 	
 	public SafeImpl() {
-		System.arraycopy(Safe.BLANK_DISPLAY.toCharArray(), 0, display, 0, display.length);
-	}
-	
-	@Override
-	public String readDisplay() {
-		return String.valueOf(display);
+		display = Safe.BLANK_DISPLAY.toCharArray();
 	}
 
 	@Override
@@ -22,14 +18,31 @@ public class SafeImpl implements Safe {
 	}
 
 	@Override
-	public void enter(char c) {
-		if (Character.isDigit(c)) {
-		  display[displayIndex++] = c;
-		}
-		if (String.valueOf(display).equals("123456")) {
-			System.arraycopy(Safe.OPEN_DISPLAY.toCharArray(), 0, display, 0, display.length);
-			locked  = false;
-		}
+	public String readDisplay() {
+		return String.valueOf(display);
 	}
+
+	@Override
+	public void enter(char c) {
+		
+		if (!kPressed) { 
+			kPressed  = (c == 'K'); 
+		}
+		if (Character.isDigit(c) && !kPressed) {
+			display = Safe.ERROR_DISPLAY.toCharArray();
+			return;
+		}
+		if (Character.isDigit(c)) {
+			display[index++] = c;
+		}
+
+		if ( String.valueOf(display).equals("123456")) {
+			locked = false;
+			kPressed = false;
+			display = Safe.OPEN_DISPLAY.toCharArray();
+		} 
+	}
+
+
 
 }
