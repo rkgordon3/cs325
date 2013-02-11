@@ -1,5 +1,12 @@
 package frs.hotgammon.alphamon;
 
+import frs.hotgammon.Board;
+import frs.hotgammon.Color;
+import frs.hotgammon.Game;
+import frs.hotgammon.Location;
+import frs.hotgammon.MoveValidator;
+import frs.hotgammon.Square;
+
 /**
  * Skeleton implementation of HotGammon.
  * 
@@ -17,19 +24,31 @@ public class GameImpl implements Game {
 	private final  int TURN_MAX = 5;
 	private Color[] players = { Color.BLACK, Color.RED};
 	private int[][] rollSequence = { {1,2}, {3,4}, {5,6} };
-	
+	private MoveValidator validator;
+	 
 	private int turnCount = -1;
 	final int MOVES_IN_TURN = 2;
 	private int remainingMoves = MOVES_IN_TURN;
 	
 	private Board board;
+	
+	public GameImpl() {
+		validator = new AlphaMoveValidator(this);
+	}
 
 	public void newGame() {
 		board = new BoardImpl(Location.values().length);
 		board.place(Color.BLACK, Location.R1.ordinal());
 		board.place(Color.BLACK, Location.R1.ordinal());
+		board.place(Color.BLACK, Location.B6.ordinal());
 		board.place(Color.RED, Location.B1.ordinal());
+		board.place(Color.RED, Location.B1.ordinal());
+		board.place(Color.RED, Location.R6.ordinal());
+		playerInTurn = Color.NONE;	
+		turnCount  = -1;
+		remainingMoves = MOVES_IN_TURN;
 	}
+	
 
 	public void nextTurn() {
 		remainingMoves = MOVES_IN_TURN;
@@ -42,9 +61,11 @@ public class GameImpl implements Game {
 		if (remainingMoves == 0) {
 			return false;
 		}
-		if (occupiedByOpponent(to)) {
+		
+		if (! validator.isValid(from, to)) {
 			return false;
 		}
+		
 		if (!board.remove(playerInTurn, from.ordinal()))
 			return false;
 		remainingMoves--;
@@ -72,15 +93,13 @@ public class GameImpl implements Game {
 	}
 
 	public Color getColor(Location location) {
-		return board.getSquare(location.ordinal()).player;
+		Square sq = board.getSquare(location.ordinal());
+		return sq.occupants == 0 ? Color.NONE : sq.player;
 	}
 
 	public int getCount(Location location) {
 		return board.getSquare(location.ordinal()).occupants;
 	}
 	
-	private boolean occupiedByOpponent(Location loc) {
-		return getCount(loc) > 0 &&
-			   getColor(loc) != playerInTurn;
-	}
+	
 }

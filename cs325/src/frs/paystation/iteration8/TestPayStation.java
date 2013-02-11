@@ -119,8 +119,7 @@ public class TestPayStation {
     ps.buy(); 
     assertEquals( "Display should have been cleared",
                   0 , ps.readDisplay() );
-   
-    ps.addPayment(PayStationImpl.DIME); 
+       ps.addPayment(PayStationImpl.DIME); 
     ps.addPayment(PayStationImpl.QUARTER);
     assertEquals( "Next add payment should display correct time",
           (10+25) / PayStationImpl.NICKEL 

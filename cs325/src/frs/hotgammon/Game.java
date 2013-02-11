@@ -1,4 +1,6 @@
-package frs.hotgammon.alphamon;
+package frs.hotgammon;
+
+
 /** This interface encapsulate all responsibilites of
     a Backgammon game. Please consult the book's
     project part for further descriptions.
@@ -54,7 +56,7 @@ public interface Game {
    * backgammon rules) then the opponent checker is moved to the bar.
    * @param from the location to move the checker from
    * @param to the location to move the checker to
-   * @return false if the indicated move is illegal 
+   * @return false if the indicated move is illegal, otherwise return true 
    */
   public boolean move(Location from, Location to);
 

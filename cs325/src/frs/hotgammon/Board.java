@@ -1,4 +1,5 @@
-package frs.hotgammon.alphamon;
+package frs.hotgammon;
+
 
 public interface Board {
 	public boolean place(Color player, int sqNumber);

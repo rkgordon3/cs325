@@ -1,4 +1,5 @@
-package frs.hotgammon.alphamon;
+package frs.hotgammon;
+
 
 public class Square {
 		public int occupants = 0;

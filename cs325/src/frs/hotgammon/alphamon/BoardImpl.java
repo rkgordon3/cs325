@@ -1,5 +1,9 @@
 package frs.hotgammon.alphamon;
 
+import frs.hotgammon.Board;
+import frs.hotgammon.Color;
+import frs.hotgammon.Square;
+
 public class BoardImpl implements Board {
 
 	
@@ -15,9 +19,7 @@ public class BoardImpl implements Board {
 	@Override
 	public boolean place(Color player, int sqNumber) {
 		Square s = board[sqNumber];
-		if (s.player != Color.NONE && s.player != player) {
-			return false;
-		}
+
 		s.player = player;
 		s.occupants++;
 		return true;

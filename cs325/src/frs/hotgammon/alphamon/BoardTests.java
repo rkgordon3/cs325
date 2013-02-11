@@ -5,6 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import frs.hotgammon.Color;
+import frs.hotgammon.Location;
+
 public class BoardTests {
 	private BoardImpl b;
 
@@ -13,11 +16,7 @@ public class BoardTests {
 		b = new BoardImpl(25);
 	}
 
-	@Test
-	public void shouldNotBeAbleToPlaceTwoDifferentColorsOnSameSquare() {
-		assertTrue(b.place(Color.BLACK, Location.R1.ordinal()));
-		assertFalse(b.place(Color.RED, Location.R1.ordinal()));
-	}
+
 
 	@Test
 	public void shouldBeAbleToPlaceSameColorOnGivenSquare() {
