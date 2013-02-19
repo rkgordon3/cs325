@@ -1,4 +1,4 @@
-package frs.hotgammon.alphamon;
+package frs.hotgammon.tests;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import frs.hotgammon.Color;
 import frs.hotgammon.Location;
+import frs.hotgammon.common.BoardImpl;
+
 
 public class BoardTests {
 	private BoardImpl b;

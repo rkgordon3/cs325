@@ -21,6 +21,8 @@ package frs.hotgammon;
 */
 
 public interface Game {
+	
+	public static final int NUMBER_OF_PLAYERS = 15;
 
   // == mutator methods ==
 

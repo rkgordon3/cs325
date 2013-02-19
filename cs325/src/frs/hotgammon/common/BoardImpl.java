@@ -1,8 +1,9 @@
-package frs.hotgammon.alphamon;
+package frs.hotgammon.common;
 
 import frs.hotgammon.Board;
 import frs.hotgammon.Color;
 import frs.hotgammon.Square;
+
 
 public class BoardImpl implements Board {
 
@@ -40,5 +41,14 @@ public class BoardImpl implements Board {
 	@Override
 	public Square getSquare(int sqNumber) {
 		return board[sqNumber];
+	}
+	
+	public void clear() {
+		int size = board.length;
+		board = new Square[size];
+		for (int i = 0; i < size; i++) {
+			board[i] = new Square();
+		}
+		
 	}
 }
