@@ -9,6 +9,7 @@ import frs.hotgammon.Color;
 import frs.hotgammon.Location;
 import frs.hotgammon.common.GameImpl;
 import frs.hotgammon.variants.movevalidators.SimpleMoveValidator;
+import frs.hotgammon.variants.rolldeterminers.PairSequenceRollDeterminer;
 import frs.hotgammon.variants.turndeterminers.AlternatingTurnDeterminer;
 import frs.hotgammon.variants.winnerdeterminers.BearOffWinnerDeterminer;
 import frs.hotgammon.common.GameImpl.Placement;
@@ -21,7 +22,8 @@ public class GammaMonTests {
 	public void setup() {
 		game = new GameImpl(new SimpleMoveValidator(),
 				new BearOffWinnerDeterminer(),
-				new AlternatingTurnDeterminer());
+				new AlternatingTurnDeterminer(),
+				new PairSequenceRollDeterminer());
 		game.newGame();
 	}
 
@@ -97,4 +99,22 @@ public class GammaMonTests {
 		game.nextTurn();
 		assertEquals(Color.RED, game.winner());
 	}
+	
+	// dan tests
+    @Test
+    public void shouldNotBeAWinnerRightAway() {
+        assertTrue(game.winner()==Color.NONE);
+        game.nextTurn();
+        assertTrue(game.winner()==Color.NONE);
+    }
+    @Test
+    public void shouldNotEndAfter6Turns(){
+        game.nextTurn();
+        game.nextTurn();
+        game.nextTurn();
+        game.nextTurn();
+        game.nextTurn();
+        game.nextTurn();
+        assertEquals(game.winner(),Color.NONE);
+    }
 }

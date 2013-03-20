@@ -7,6 +7,7 @@ import frs.hotgammon.Color;
 import frs.hotgammon.Game;
 import frs.hotgammon.Location;
 import frs.hotgammon.MoveValidator;
+import frs.hotgammon.RollDeterminer;
 import frs.hotgammon.TurnDeterminer;
 import frs.hotgammon.Square;
 import frs.hotgammon.WinnerDeterminer;
@@ -26,23 +27,25 @@ import frs.hotgammon.WinnerDeterminer;
 public class GameImpl implements Game {
 	private Color playerInTurn = Color.NONE;
 	private Color[] players = { Color.BLACK, Color.RED};
-	private int[][] rollSequence = { {1,2}, {3,4}, {5,6} };
+
 	private MoveValidator validator;
 	private ArrayList<Integer> dieLeft;
 	 
-	private int turnCount = -1;
+    
 	final int MOVES_IN_TURN = 2;
 	private int remainingMoves = MOVES_IN_TURN;
-	
+	private int turnCount = -1;
 	private Board board;
 	private int[] thrown;
 	private WinnerDeterminer winnerDeterminer;
 	private TurnDeterminer nextTurnDeterminer;
+	private RollDeterminer rollDeterminer;
 	
-	public GameImpl(MoveValidator mv, WinnerDeterminer wd, TurnDeterminer ntd) {
+	public GameImpl(MoveValidator mv, WinnerDeterminer wd, TurnDeterminer ntd, RollDeterminer rd) {
 		validator = mv;
 		winnerDeterminer  = wd;
 		nextTurnDeterminer = ntd;
+		rollDeterminer = rd;
 		mv.setGame(this);
 		wd.setGame(this);
 		ntd.setGame(this);
@@ -61,19 +64,21 @@ public class GameImpl implements Game {
 				new Placement(Color.RED, Location.R6)
 			});
 
+
 		playerInTurn = Color.NONE;	
 		turnCount  = -1;
 		remainingMoves = MOVES_IN_TURN;
+		rollDeterminer.reset();
 	}
 	
 
 	public void nextTurn() {
-		
+		turnCount++;
 		// Call before throw so previous throw can be read
 		Color nextPlayer = nextTurnDeterminer.nextTurn();
 		remainingMoves = MOVES_IN_TURN;
-		turnCount++;
-		thrown = rollSequence[turnCount % rollSequence.length];
+		thrown = rollDeterminer.getRoll();
+	
 		dieLeft = new ArrayList<Integer>(remainingMoves);
 		for (int i = 0; i <  remainingMoves;  i++) {
 			dieLeft.add(thrown[i]);

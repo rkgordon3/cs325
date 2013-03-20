@@ -13,12 +13,15 @@ import org.junit.runners.Parameterized.Parameters;
 import frs.hotgammon.Color;
 import frs.hotgammon.Location;
 import frs.hotgammon.MoveValidator;
+import frs.hotgammon.RollDeterminer;
 import frs.hotgammon.TurnDeterminer;
 import frs.hotgammon.WinnerDeterminer;
 import frs.hotgammon.common.GameImpl;
 import frs.hotgammon.common.GameImpl.Placement;
 import frs.hotgammon.variants.movevalidators.SimpleMoveValidator;
 import frs.hotgammon.variants.movevalidators.CompleteMoveValidator;
+import frs.hotgammon.variants.rolldeterminers.PairSequenceRollDeterminer;
+import frs.hotgammon.variants.rolldeterminers.RandomRollDeterminer;
 import frs.hotgammon.variants.turndeterminers.AceyDeuceyTurnDeterminer;
 import frs.hotgammon.variants.turndeterminers.AlternatingTurnDeterminer;
 import frs.hotgammon.variants.winnerdeterminers.BearOffWinnerDeterminer;
@@ -30,8 +33,8 @@ public class CoreTests {
 	private GameImpl game;
 	
 	
-	public CoreTests(MoveValidator validator, WinnerDeterminer winnerDeterminer, TurnDeterminer ntd) {
-		game = new GameImpl(validator, winnerDeterminer, ntd);
+	public CoreTests(MoveValidator validator, WinnerDeterminer winnerDeterminer, TurnDeterminer ntd, RollDeterminer rd) {
+		game = new GameImpl(validator, winnerDeterminer, ntd, rd);
 		game.newGame();		
 	}
 	
@@ -39,13 +42,18 @@ public class CoreTests {
 	 public static Collection<Object[]> data() {
 	   Object[][] data = new Object[][] { 
 			   // AlphaMon		
-			   { new SimpleMoveValidator(), new SixMoveWinnerDeterminer(), new AlternatingTurnDeterminer() },
+			   { new SimpleMoveValidator(), new SixMoveWinnerDeterminer(), new AlternatingTurnDeterminer(), new PairSequenceRollDeterminer() },
 			   // BetaMon
-			   { new CompleteMoveValidator(), new SixMoveWinnerDeterminer() , new AlternatingTurnDeterminer()},
+			   { new CompleteMoveValidator(), new SixMoveWinnerDeterminer() , new AlternatingTurnDeterminer(), new PairSequenceRollDeterminer()},
 			   // GammaMon
-			   { new SimpleMoveValidator(), new BearOffWinnerDeterminer() , new AlternatingTurnDeterminer()},
+			   { new SimpleMoveValidator(), new BearOffWinnerDeterminer() , new AlternatingTurnDeterminer(), new PairSequenceRollDeterminer()},
 			   // DeltaMon
-			   { new SimpleMoveValidator(), new SixMoveWinnerDeterminer() , new AceyDeuceyTurnDeterminer()},
+			   { new SimpleMoveValidator(), new SixMoveWinnerDeterminer() , new AceyDeuceyTurnDeterminer(), new PairSequenceRollDeterminer()},
+			   /*
+			    * // EpsilonMon
+			  
+			   { new SimpleMoveValidator(), new SixMoveWinnerDeterminer(), new AlternatingTurnDeterminer(), new RandomRollDeterminer() },
+			   */
 	   };
 	   return Arrays.asList(data);
 	 }
@@ -80,6 +88,8 @@ public class CoreTests {
 			assertEquals(2, game.getCount(Location.R1));
 			assertEquals(Color.BLACK, game.getColor(Location.R1));
 			game.nextTurn();
+			assertEquals(1, game.diceThrown()[0]);
+			assertEquals(2, game.diceThrown()[1]);
 			assertTrue(game.move(Location.R1, Location.R2));
 			assertEquals(1, game.getCount(Location.R2));
 			assertEquals(Color.BLACK, game.getColor(Location.R2));

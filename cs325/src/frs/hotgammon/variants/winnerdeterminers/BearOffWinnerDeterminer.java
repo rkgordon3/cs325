@@ -12,6 +12,9 @@ public class BearOffWinnerDeterminer implements WinnerDeterminer {
 
 	@Override
 	public Color winner(int turnCount) {
+		if (game.getPlayerInTurn() == Color.NONE) {
+			return Color.NONE;
+		}
 		String label = GameImpl.playerLabel(game.getPlayerInTurn());
 		return game.getCount(Location.valueOf(label+"_BEAR_OFF")) == Game.NUMBER_OF_PLAYERS ? game.getPlayerInTurn() : Color.NONE;
 	}
