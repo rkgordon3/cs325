@@ -19,7 +19,7 @@ public class BetaMonTests {
 
 	@Before
 	public void setup() { 
-		game = new GameImpl(new CompleteMoveValidator(), new SixMoveWinnerDeterminer(), new AlternatingTurnDeterminer(), new PairSequenceRollDeterminer());
+		game = new GameImpl(new CompleteMoveValidator(), new SixMoveWinnerDeterminer(), new AlternatingTurnDeterminer());
 		game.newGame();
 	}
 
@@ -99,11 +99,11 @@ public class BetaMonTests {
 		});
 		game.nextTurn();
 		game.nextTurn(); // Will generate 3,4
-		int prevCountRedBar = game.getCount(Location.B_BAR);
+		int prevCountBlackBar = game.getCount(Location.B_BAR);
 		assertTrue(game.move(Location.B1, Location.B4));
 		assertTrue(Color.RED == game.getColor(Location.B4));
 		assertEquals(1, game.getCount(Location.B4));
-		assertEquals(prevCountRedBar+1, game.getCount(Location.B_BAR));
+		assertEquals(prevCountBlackBar+1, game.getCount(Location.B_BAR));
 		
 		
 	}

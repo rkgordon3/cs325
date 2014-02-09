@@ -34,7 +34,7 @@ public class PayStationImpl implements PayStation {
 	public static final int TIME_PER_5CENT = 2;
 	
   private int totalInserted;
-private int timeBought;
+  private int timeBought;
   public void addPayment( int coinValue ) 
           throws IllegalCoinException {
     switch ( coinValue ) {
@@ -44,7 +44,6 @@ private int timeBought;
     default: 
       throw new IllegalCoinException("Invalid coin: "+coinValue);
     }
-   
     totalInserted += coinValue;
     timeBought = totalInserted / NICKEL * TIME_PER_5CENT;
   }
@@ -53,10 +52,15 @@ private int timeBought;
   }
   public Receipt buy() {
 	    Receipt r = new ReceiptImpl(timeBought);
-	    timeBought = totalInserted = 0;
+	    reset();
 	    return r;
   }
   public void cancel() {
+	  reset();
+  }
+  
+  private void reset() {
+	  timeBought = totalInserted = 0;
   }
 }
 

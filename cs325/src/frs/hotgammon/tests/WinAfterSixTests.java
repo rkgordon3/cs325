@@ -13,13 +13,13 @@ import org.junit.runners.Parameterized.Parameters;
 
 import frs.hotgammon.Color;
 import frs.hotgammon.MoveValidator;
-import frs.hotgammon.RollDeterminer;
+
 import frs.hotgammon.TurnDeterminer;
 import frs.hotgammon.WinnerDeterminer;
 import frs.hotgammon.common.GameImpl;
 import frs.hotgammon.variants.movevalidators.SimpleMoveValidator;
 import frs.hotgammon.variants.movevalidators.CompleteMoveValidator;
-import frs.hotgammon.variants.rolldeterminers.PairSequenceRollDeterminer;
+
 import frs.hotgammon.variants.turndeterminers.AceyDeuceyTurnDeterminer;
 import frs.hotgammon.variants.turndeterminers.AlternatingTurnDeterminer;
 import frs.hotgammon.variants.winnerdeterminers.BearOffWinnerDeterminer;
