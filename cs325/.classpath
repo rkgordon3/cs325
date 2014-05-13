@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="frs/chap8/refactor/" kind="src" path="src"/>
+	<classpathentry excluding="frs/chap8/refactor/|frs/chap11/state/compositional/|frs/chap11/state/turnstile/|frs/chap12/|frs/chap8/|frs/chap13/" kind="src" path="src"/>
+	<classpathentry kind="src" path="image"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/lcd.jar"/>

@@ -1,17 +1,18 @@
 package inclass.frs.hotgammon.variants.movevalidators;
 
-import frs.hotgammon.Color;
-import frs.hotgammon.Game;
-import frs.hotgammon.Location;
-import frs.hotgammon.MoveValidator;
-import frs.hotgammon.common.GameImpl;
+import inclass.frs.hotgammon.common.Color;
+import inclass.frs.hotgammon.common.Game;
+import inclass.frs.hotgammon.common.GameImpl;
+import inclass.frs.hotgammon.common.Location;
+import inclass.frs.hotgammon.common.MoveValidator;
+
 
 public class CompleteMoveValidator implements MoveValidator {
 
 	private Game game;
 
 	@Override
-	public boolean isValid(Location from, Location to) {
+	public boolean isValid( Location from, Location to) {
 		
 		// check direction
 		int proposedDistance = Location.distance(from, to);
@@ -65,7 +66,6 @@ public class CompleteMoveValidator implements MoveValidator {
 		return moveDistance != 0;
 	}
 
-	@Override
 	public void setGame(Game game) {
 		this.game = game;
 	}

@@ -1,11 +1,12 @@
 package frs.hotgammon.variants.turndeterminers;
 
-import frs.hotgammon.Color;
-import frs.hotgammon.Game;
+import frs.hotgammon.BaseDeterminer;
+import frs.hotgammon.framework.Color;
+import frs.hotgammon.framework.Game;
 import frs.hotgammon.TurnDeterminer;
 
-public class AceyDeuceyTurnDeterminer implements TurnDeterminer {
-	private Game game;
+public class AceyDeuceyTurnDeterminer extends BaseDeterminer implements TurnDeterminer {
+	
 
 	@Override
 	public Color nextTurn() {
@@ -16,11 +17,6 @@ public class AceyDeuceyTurnDeterminer implements TurnDeterminer {
 		boolean isAD = isAceyDeucey(previousRoll);
 		Color pit = game.getPlayerInTurn();
 		return isAD ? pit : (pit == Color.RED ? Color.BLACK : Color.RED);
-	}
-
-	@Override
-	public void setGame(Game game) {
-		this.game = game;
 	}
 	
 	private boolean isAceyDeucey(int[] roll) {

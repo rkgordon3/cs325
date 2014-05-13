@@ -9,7 +9,17 @@ public class Board {
 		public int count;
 	}
 	
-    private Position[] board;
+    static public class Placement {
+		public Location location;
+		public Color player;
+	
+		public Placement(Color player, Location location) {
+			this.player = player;
+			this.location = location;
+		}
+	}
+
+	private Position[] board;
     
     public Board(int size) {
     	board = new Position[size];
@@ -34,10 +44,9 @@ public class Board {
 	
 	public void clear() {
 		int size = board.length;
-		board = new Position[size];
 		for (int i = 0; i < size; i++) {
-			board[i] = new Position();
-		}
-		
+			board[i].count = 0;
+			board[i].player = Color.NONE;
+		}		
 	}
 }

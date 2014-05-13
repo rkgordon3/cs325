@@ -1,12 +1,13 @@
 package inclass.frs.hotgammon.tests;
 
+import frs.hotgammon.factory.AlphaMonFactory;
+import inclass.frs.hotgammon.common.Board;
 import inclass.frs.hotgammon.common.Color;
-import inclass.frs.hotgammon.common.Game;
 import inclass.frs.hotgammon.common.GameImpl;
-import inclass.frs.hotgammon.common.GameImpl.Placement;
 import inclass.frs.hotgammon.common.Location;
-import inclass.frs.hotgammon.common.Position;
 import inclass.frs.hotgammon.variants.movevalidators.SimpleMoveValidator;
+import inclass.frs.hotgammon.variants.rolldeterminers.*;
+import inclass.frs.hotgammon.variants.turndeterminer.AlternatingTurnDeterminer;
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -31,7 +32,7 @@ public class TestAlphamon {
   private GameImpl game;
   
   @Before public void setup() {
-    game = new GameImpl(new SimpleMoveValidator());
+    game = new GameImpl(new AlphaMonFactory());
     game.newGame();
   }
   
@@ -45,10 +46,9 @@ public class TestAlphamon {
   
   @Test
   public void shouldHave2BlacksOnR1() {
-	  game.configure(null);
-	  game.configure(new GameImpl.Placement[] {
-			  new Placement(Color.BLACK, Location.R1),
-			  new Placement(Color.BLACK, Location.R1)
+	  game.configure(new Board.Placement[] {
+			  new Board.Placement(Color.BLACK, Location.R1),
+			  new Board.Placement(Color.BLACK, Location.R1)
 	  });
 	  assertEquals("Two checkers on R1", 2, game.getCount(Location.R1));
 	  assertEquals("R1 contains Black", Color.BLACK, game.getColor(Location.R1));
@@ -69,8 +69,13 @@ public class TestAlphamon {
   
   @Test
   public void afterTwoBlackMovesMoveCountIsZero() {
-	  game.move(Location.R1,  Location.R2);
-	  game.move(Location.R1,  Location.R2);
+	  game.configure(new Board.Placement[] {
+			  new Board.Placement(Color.BLACK, Location.R1),
+			  new Board.Placement(Color.BLACK, Location.R1)
+	  });
+	  game.nextTurn();
+	  assertTrue(game.move(Location.R1,  Location.R2));
+	  assertTrue(game.move(Location.R1,  Location.R2));
 	  assertEquals("Move count should be zero", 0, game.getNumberOfMovesLeft());
   }
   

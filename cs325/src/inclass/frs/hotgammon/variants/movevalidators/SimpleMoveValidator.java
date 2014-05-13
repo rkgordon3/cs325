@@ -20,6 +20,9 @@ public class SimpleMoveValidator implements MoveValidator  {
 
 	@Override
 	public boolean isValid(Location from, Location to) {
+		if (game.getColor(from) != game.getPlayerInTurn()) {
+			return false;
+		}
 		if (occupiedByOpponent(from, to)) {
 			return false;
 		}

@@ -1,12 +1,12 @@
 package frs.hotgammon.variants.turndeterminers;
 
-import frs.hotgammon.Color;
+import frs.hotgammon.BaseDeterminer;
+import frs.hotgammon.framework.Color;
 import frs.hotgammon.Game;
 import frs.hotgammon.TurnDeterminer;
 
-public class AlternatingTurnDeterminer implements TurnDeterminer {
+public class AlternatingTurnDeterminer  extends BaseDeterminer implements TurnDeterminer {
 
-	private Game game;
 
 	@Override
 	public Color nextTurn() {	
@@ -16,8 +16,6 @@ public class AlternatingTurnDeterminer implements TurnDeterminer {
 		return game.getPlayerInTurn() == Color.RED ? Color.BLACK : Color.RED;	
 	}
 	
-	public void setGame(Game game) {
-		this.game = game;
-	}
+
 
 }

@@ -1,5 +1,6 @@
 package frs.hotgammon;
 
+import frs.hotgammon.framework.Color;
 
 public interface Board {
 	public boolean place(Color player, int sqNumber);

@@ -1,16 +1,22 @@
 package frs.hotgammon.common;
 
+import frs.hotgammon.common.GameImpl;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import frs.hotgammon.Board;
-import frs.hotgammon.Color;
-import frs.hotgammon.Game;
-import frs.hotgammon.Location;
+import frs.hotgammon.framework.Color;
+import frs.hotgammon.framework.Game;
+import frs.hotgammon.framework.Location;
 import frs.hotgammon.MoveValidator;
 import frs.hotgammon.RollDeterminer;
 import frs.hotgammon.TurnDeterminer;
 import frs.hotgammon.Square;
 import frs.hotgammon.WinnerDeterminer;
+import frs.hotgammon.BaseDeterminer;
+import frs.hotgammon.framework.GameObserver;
 
 /**
  * Skeleton implementation of HotGammon.
@@ -28,60 +34,117 @@ public class GameImpl implements Game {
 	private Color playerInTurn = Color.NONE;
 	private Color[] players = { Color.BLACK, Color.RED};
 
-	private MoveValidator validator;
 	private ArrayList<Integer> dieLeft;
+	protected ArrayList<GameObserver> observers = new ArrayList<GameObserver>();
 	 
-    
 	final int MOVES_IN_TURN = 2;
 	private int remainingMoves = MOVES_IN_TURN;
-	private int turnCount = -1;
-	private Board board;
+	private int turnCount = 0;
+	protected Board board;
 	private int[] thrown;
 	private WinnerDeterminer winnerDeterminer;
 	private TurnDeterminer nextTurnDeterminer;
 	private RollDeterminer rollDeterminer;
+	private MoveValidator validator;
 	
-	public GameImpl(MoveValidator mv, WinnerDeterminer wd, TurnDeterminer ntd, RollDeterminer rd) {
+	public GameImpl(MoveValidator mv, 
+			WinnerDeterminer wd, 
+			TurnDeterminer ntd, 
+			RollDeterminer rd) {
 		validator = mv;
 		winnerDeterminer  = wd;
 		nextTurnDeterminer = ntd;
 		rollDeterminer = rd;
-		mv.setGame(this);
-		wd.setGame(this);
-		ntd.setGame(this);
+		((BaseDeterminer)mv).setGame(this);
+		((BaseDeterminer)wd).setGame(this);
+		((BaseDeterminer)ntd).setGame(this);
+		playerInTurn = Color.RED;
 	}
 
 	public void newGame() {
 		board = new BoardImpl(Location.values().length);
 		
 		configure( new Placement[] { 
+			new Placement(Color.BLACK, Location.R1),
 				new Placement(Color.BLACK, Location.R1),
-				new Placement(Color.BLACK, Location.R1),
-				new Placement(Color.BLACK, Location.R2),
+				new Placement(Color.BLACK, Location.R12),
+				new Placement(Color.BLACK, Location.R12),
+				new Placement(Color.BLACK, Location.R12),
+				new Placement(Color.BLACK, Location.R12),
+				new Placement(Color.BLACK, Location.R12),
+				new Placement(Color.BLACK, Location.B8),
+				new Placement(Color.BLACK, Location.B8),
+				new Placement(Color.BLACK, Location.B8),
 				new Placement(Color.BLACK, Location.B6),
+				new Placement(Color.BLACK, Location.B6),
+				new Placement(Color.BLACK, Location.B6),
+				new Placement(Color.BLACK, Location.B6),
+				new Placement(Color.BLACK, Location.B6),
+				
 				new Placement(Color.RED, Location.B1),
 				new Placement(Color.RED, Location.B1),
-				new Placement(Color.RED, Location.R6)
+				new Placement(Color.RED, Location.B12),
+				new Placement(Color.RED, Location.B12),
+				new Placement(Color.RED, Location.B12),
+				new Placement(Color.RED, Location.B12),
+				new Placement(Color.RED, Location.B12),
+				new Placement(Color.RED, Location.R8),
+				new Placement(Color.RED, Location.R8),
+				new Placement(Color.RED, Location.R8),
+				new Placement(Color.RED, Location.R6),
+				new Placement(Color.RED, Location.R6),
+				new Placement(Color.RED, Location.R6),
+				new Placement(Color.RED, Location.R6),
+				new Placement(Color.RED, Location.R6),
+		
 			});
 
-
+		initializeBoard();
+		
 		playerInTurn = Color.NONE;	
-		turnCount  = -1;
+		turnCount  = 0;
 		remainingMoves = MOVES_IN_TURN;
 		rollDeterminer.reset();
+	
+		nextTurn(); // initialize turn
+		
+	}
+	
+	private void initializeBoard() {
+		playerInTurn = Color.BLACK;
+		move(Location.B_BEAR_OFF,
+                Location.B1);
+		move(Location.B_BEAR_OFF,
+                Location.B1);
+
 	}
 	
 
 	public void nextTurn() {
+		Color nextPlayer = Color.BLACK;
+		thrown = rollDeterminer.roll();
+		if (turnCount == 0) {
+			nextPlayer = thrown[0] > thrown[1] ? Color.BLACK : Color.RED;
+		} else {
+			nextPlayer = nextTurnDeterminer.nextTurn();
+		}
+		
 		turnCount++;
-		// Call before throw so previous throw can be read
-		Color nextPlayer = nextTurnDeterminer.nextTurn();
 		remainingMoves = MOVES_IN_TURN;
-		thrown = rollDeterminer.getRoll();
+		
+		notifyOberserversOfDiceRoll(thrown);
+		
+		boolean doubles = thrown[0] == thrown[1];
+		if (doubles) {
+			remainingMoves += 2;
+		}
 	
 		dieLeft = new ArrayList<Integer>(remainingMoves);
-		for (int i = 0; i <  remainingMoves;  i++) {
+		for (int i = 0; i <  thrown.length;  i++) {
 			dieLeft.add(thrown[i]);
+			if (doubles) {
+				dieLeft.add(thrown[i]);
+			}
 		}
 		playerInTurn = nextPlayer;		
 	}
@@ -100,16 +163,22 @@ public class GameImpl implements Game {
 			return false;
 		}
 		
+		// send opponent to bar if appropriate
 		if (getCount(to) > 0 && getColor(to) != playerInTurn) {
 			// one player on  'to' spot, send to bar
 			board.remove(otherPlayer(), to.ordinal());
-			board.place(otherPlayer(), playerInTurn == Color.RED ? Location.B_BAR.ordinal() 
-                                                                 : Location.R_BAR.ordinal());
+			Location bar = playerInTurn == Color.RED ? Location.B_BAR
+                    : Location.R_BAR;
+			board.place(otherPlayer(), bar.ordinal());
+			notifyObserversOfCheckerMove(to, bar);
 		}
 		
 		consumeDie(Math.abs(Location.distance(from,  to)), isBearOff(to));
+	
 		return board.place(playerInTurn, to.ordinal());
 	}
+
+
 
 	public Color getPlayerInTurn() {
 		return playerInTurn;
@@ -124,6 +193,12 @@ public class GameImpl implements Game {
 	}
 
 	public int[] diceValuesLeft() {	
+		Collections.sort(dieLeft, new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				return o2 - o1;
+			}			
+		});
 		int[] left = new int[dieLeft.size()];
 		for (int i = 0; i < dieLeft.size(); i++) {
 			left[i] = dieLeft.get(i);
@@ -178,13 +253,39 @@ public class GameImpl implements Game {
 			this.location = location;
 		}
 	}
+
+
+	@Override
+	public boolean isGameOver() {
+		// TODO Auto-generated method stub
+		return winnerDeterminer.isGameOver(turnCount);
+	}
+	
+	@Override 
+	public void addObserver(GameObserver observer) {
+		observers.add(observer);
+	}
+	
+	private void notifyObserversOfCheckerMove(Location from, Location to) {
+		for (GameObserver g : observers) {
+			g.checkerMove(from, to);
+		}
+		
+	}
+	
+	private void notifyOberserversOfDiceRoll(int[] dice) {
+		for (GameObserver g : observers) {
+			g.diceRolled(dice);
+		}
+	}
 	public void configure(Placement[] placements) {
 		board.clear();
 		if (placements == null || placements.length == 0) {			
 			return;
 		}
 		for (int i = 0; i < placements.length; i++) {
-			board.place(placements[i].player, placements[i].location.ordinal());	
+			board.place(placements[i].player, placements[i].location.ordinal());
+			notifyObserversOfCheckerMove(bearOffFor(placements[i].player),  placements[i].location);
 		}
 	}
 	
@@ -192,7 +293,11 @@ public class GameImpl implements Game {
 		return String.valueOf(player.toString().charAt(0));
 	}
 	
-	private boolean isBearOff(Location to) {
+	public static Location bearOffFor(Color player) {
+		return Location.valueOf(playerLabel(player) + "_BEAR_OFF");
+	}
+	
+	public static boolean isBearOff(Location to) {
 		return to == Location.R_BEAR_OFF || to == Location.B_BEAR_OFF;
 	}
 	

@@ -3,17 +3,15 @@ package frs.hotgammon.variants.movevalidators;
 
 import frs.hotgammon.*;
 
-public class SimpleMoveValidator implements MoveValidator  {
+import frs.hotgammon.framework.Location;
+
+public class SimpleMoveValidator extends BaseDeterminer implements MoveValidator  {
 	
-	private Game game;
 
 	public SimpleMoveValidator() {
 	
 	}
-	
-	public void setGame(Game game) {
-		this.game = game;
-	}
+
 
 	@Override
 	public boolean isValid(Location from, Location to) {

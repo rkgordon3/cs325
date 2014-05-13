@@ -1,5 +1,7 @@
 package inclass.frs.hotgammon.common;
 
+
+
 /**
  * Skeleton implementation of HotGammon.
  * 
@@ -15,27 +17,34 @@ package inclass.frs.hotgammon.common;
 public class GameImpl implements Game {
 	public static final int N_POSITIONS = 28;
 	private MoveValidator moveValidator;
+	private RollDeterminer rollDeterminer;
+	private TurnDeterminer turnDeterminer;
 
+	private int[] diceThown;
+	
 	public GameImpl() {
 	}
 
-	public GameImpl(MoveValidator mv) {
-		this.moveValidator = mv;
-		mv.setGame(this);
+	public GameImpl(GammonFactory factory) {
+		this.moveValidator = factory.createMoveValidator();
+		this.rollDeterminer = factory.createRollDeterminer();
+		this.turnDeterminer = factory.createTurnDeterminer();
+		this.moveValidator.setGame(this);
 	}
 
 	private Color playerInTurn = Color.NONE;
 	private int remainingMoves = 2;
 	private int turnCount = 0;
-	private int[][] diceValues = new int[][] { new int[] { 1, 2 },
-			new int[] { 3, 4 }, new int[] { 5, 6 } };
-	private Board board = new Board(N_POSITIONS);
+
+	Board board = new Board(N_POSITIONS);
+	private int[] diceThrown;
 
 	public void newGame() {
 	}
 
 	public void nextTurn() {
-		playerInTurn = (playerInTurn == Color.BLACK) ? Color.RED : Color.BLACK;
+		playerInTurn = turnDeterminer.nextTurn(playerInTurn, diceThrown);	
+		diceThrown = rollDeterminer.roll();
 		turnCount++;
 	}
 
@@ -59,7 +68,7 @@ public class GameImpl implements Game {
 	}
 
 	public int[] diceThrown() {
-		return diceValues[(turnCount - 1) % diceValues.length];
+		return diceThrown;
 	}
 
 	public int[] diceValuesLeft() {
@@ -83,7 +92,7 @@ public class GameImpl implements Game {
 		return board.getPosition(location.ordinal()).count;
 	}
 
-	public void configure(Placement[] placements) {
+	public void configure(Board.Placement[] placements) {
 		board.clear();
 		if (placements == null || placements.length == 0) {
 			return;
@@ -92,14 +101,7 @@ public class GameImpl implements Game {
 			board.place(placements[i].location.ordinal(), placements[i].player);
 		}
 	}
-
-	static public class Placement {
-		public Location location;
-		public Color player;
-
-		public Placement(Color player, Location location) {
-			this.player = player;
-			this.location = location;
-		}
+	public static String playerLabel(Color player) {
+		return String.valueOf(player.toString().charAt(0));
 	}
 }

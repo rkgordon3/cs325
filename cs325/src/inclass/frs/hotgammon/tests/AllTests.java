@@ -1,6 +1,4 @@
 package inclass.frs.hotgammon.tests;
-
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -13,6 +11,8 @@ import org.junit.runners.Suite.SuiteClasses;
 		TestBoard.class, 
 		BearOffWinnerTests.class,
 		SimpleMoveValidatorTests.class,
-		TestLocation.class } )
+		TestLocation.class,
+		AceyDeuceyTests.class,
+		DeltaMonTests.class } )
 public class AllTests {
 }

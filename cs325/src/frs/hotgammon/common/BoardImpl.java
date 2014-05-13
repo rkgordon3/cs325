@@ -1,9 +1,8 @@
 package frs.hotgammon.common;
 
 import frs.hotgammon.Board;
-import frs.hotgammon.Color;
+import frs.hotgammon.framework.Color;
 import frs.hotgammon.Square;
-
 
 public class BoardImpl implements Board {
 

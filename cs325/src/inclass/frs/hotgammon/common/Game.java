@@ -51,8 +51,9 @@ public interface Game {
 
   /** move one checker from one location to another. If the move is
    * invalid, then no change is made on the board. If moving to a
-   * location occupied by a single opponent checke (standard
+   * location occupied by a single opponent checker (standard
    * backgammon rules) then the opponent checker is moved to the bar.
+   * PRECONDITION: Player on 'from' is in turn.
    * @param from the location to move the checker from
    * @param to the location to move the checker to
    * @return false if the indicated move is illegal 

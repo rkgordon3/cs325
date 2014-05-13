@@ -1,5 +1,6 @@
 package frs.hotgammon;
 
+import frs.hotgammon.framework.*;
 
 /** This interface encapsulate all responsibilites of
     a Backgammon game. Please consult the book's
@@ -104,6 +105,12 @@ public interface Game {
    * Color.NONE is returned.
    */
   public Color winner();
+  
+  /**
+   * Return true if game is over, otherwise return false.
+   * @return
+   */
+  public boolean isGameOver();
 
   // == ACCESSORS to the board 
 

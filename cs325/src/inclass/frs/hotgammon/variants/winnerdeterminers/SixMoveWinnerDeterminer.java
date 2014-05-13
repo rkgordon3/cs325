@@ -14,6 +14,11 @@ public class SixMoveWinnerDeterminer implements WinnerDeterminer {
 	public Color winner(int turnCount) {
 		return turnCount == TURN_MAX ? Color.RED : Color.NONE;
 	}
+	
+	@Override
+	public boolean isGameOver(int turnCount) {
+		return turnCount == TURN_MAX;
+	}
 
 	@Override
 	public void setGame(Game game) {

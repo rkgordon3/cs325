@@ -1,40 +1,39 @@
 package frs.hotgammon.variants.movevalidators;
 
-import frs.hotgammon.Color;
-import frs.hotgammon.Game;
-import frs.hotgammon.Location;
+import frs.hotgammon.BaseDeterminer;
+import frs.hotgammon.framework.Color;
+import frs.hotgammon.framework.Game;
+import frs.hotgammon.framework.Location;
 import frs.hotgammon.MoveValidator;
 import frs.hotgammon.common.GameImpl;
 
-public class CompleteMoveValidator implements MoveValidator {
+public class CompleteMoveValidator extends BaseDeterminer implements MoveValidator  {
 
-	private Game game;
+   static final int INNER_TABLE_SZ = 6;
 
 	@Override
 	public boolean isValid(Location from, Location to) {
 		
+		//int proposedPtToMove = -1;
+		for (int d : game.diceValuesLeft()) {
+			Location.findLocation(game.getPlayerInTurn(), from, d);
+		}
 		// check direction
 		int proposedDistance = Location.distance(from, to);
-		int sign = proposedDistance/Math.abs(proposedDistance);
-		int absProposedDistance = Math.abs(proposedDistance);
+		int direction = proposedDistance/Math.abs(proposedDistance);
+		int proposedPtToMove = Math.abs(proposedDistance);
 		
-		if (game.getPlayerInTurn().getSign() != sign) {
+		if (game.getPlayerInTurn().getSign() != direction) {
 			return false;
 		}
 		 
-		// If red attempts move from elsewhere when checker
+		// If player attempts move from elsewhere when checker
 		// on bar, return false.
-		if (game.getPlayerInTurn() == Color.RED
-				&& game.getCount(Location.R_BAR) > 0 
-				&& from != Location.R_BAR) {
+		
+		if (isPlayerOnBar(game.getPlayerInTurn()) && !isBar(from)) {
 			return false;
 		}
-		if (game.getPlayerInTurn() == Color.BLACK
-				&& game.getCount(Location.B_BAR) > 0 
-				&& from != Location.B_BAR) {
-			return false;
-		}
-		boolean lastChecker = false;
+		boolean isOuterMostChecker = false;
 		// Bear off attempt
 		boolean bear_off = (to == Location.R_BEAR_OFF) || (to == Location.B_BEAR_OFF);	
 		if (bear_off) {   
@@ -43,7 +42,7 @@ public class CompleteMoveValidator implements MoveValidator {
 				}
 			
 			    // Are there checkers behind me?
-				lastChecker = sumCheckersInRange(game.getPlayerInTurn(), absProposedDistance + 1, 6) == 0;
+				isOuterMostChecker = sumCheckersInRange(game.getPlayerInTurn(), proposedPtToMove + 1, INNER_TABLE_SZ) == 0;
 				
 		}
 		// If attempting move to a point occupied by opponent, return
@@ -57,22 +56,17 @@ public class CompleteMoveValidator implements MoveValidator {
 		// Is there a die that matches proposed distance?
 
 		for (int i = 0; i < roll.length; i++) {
-			if (absProposedDistance == roll[i]  
-				  || (lastChecker && absProposedDistance < roll[i])) {
+			if (proposedPtToMove == roll[i]  
+				  || (isOuterMostChecker && proposedPtToMove < roll[i])) {
 				moveDistance = roll[i];
+				break; // found good die value
 			}
 		}
 		return moveDistance != 0;
 	}
-
-	@Override
-	public void setGame(Game game) {
-		this.game = game;
-	}
 	
 	private int sumCheckersInRange(Color player, int start, int finish) {
 		int sum = 0;
-		int len = finish - start + 1;
 		String label = GameImpl.playerLabel(player);
 		for (int i =start; i <= finish; i++) {
 			sum += game.getCount(Location.valueOf(label+i));
@@ -82,11 +76,14 @@ public class CompleteMoveValidator implements MoveValidator {
 
 	private boolean isPlayerAllWithinInnerTable(Color player) {
 		Location b_off = Location.valueOf(GameImpl.playerLabel(player) + "_BEAR_OFF");
-	
-		int sum = sumCheckersInRange(player, 1, 6) + game.getCount(b_off);
-		return sum == Game.NUMBER_OF_PLAYERS;
+		return (sumCheckersInRange(player, 1, INNER_TABLE_SZ) + game.getCount(b_off)) == Game.NUMBER_OF_PLAYERS;
 	}
 	
+	private boolean isPlayerOnBar(Color player) {
+		return game.getCount(Location.valueOf(GameImpl.playerLabel(player) + "_BAR")) > 0;
+	}
 
-
+	private boolean isBar(Location location) {
+		return location == Location.R_BAR || location == Location.B_BAR;
+	}	
 }

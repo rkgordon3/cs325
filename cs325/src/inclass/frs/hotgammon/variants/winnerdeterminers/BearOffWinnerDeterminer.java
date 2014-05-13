@@ -18,6 +18,12 @@ public class BearOffWinnerDeterminer implements WinnerDeterminer {
 			return Color.NONE;
 		}
 	}
+	
+	@Override 
+	public boolean isGameOver(int turnCount) {
+		return game.getCount(Location.B_BEAR_OFF) == Game.NUMBER_OF_PLAYERS ||
+			   game.getCount(Location.R_BEAR_OFF) == Game.NUMBER_OF_PLAYERS;
+	}
 
 	@Override
 	public void setGame(Game game) {
